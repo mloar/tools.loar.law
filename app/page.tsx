@@ -98,7 +98,8 @@ export default function Home() {
               <p>________________________________________</p>
               <p>Judge 
                 <select>
-                  {...judges.filter(e => e.division === division_or_district).map(e => <option>{e.first_name + " " + e.last_name}</option>)}
+                  {...judges.filter(e => e.division === division_or_district)
+                  .map(e => <option selected={e.calendar == calendar}>{`${e.first_name} ${e.middle_name} ${e.last_name}`}</option>)}
                 </select>
               </p>
             </div>
