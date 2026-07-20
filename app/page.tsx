@@ -96,11 +96,13 @@ export default function Home() {
               </div>
               <div>
                 <p>________________________________________</p>
-                <p>Judge 
-                  <select>
-                    {...judges.filter(e => e.division === division_or_district)
-                      .map(e => <option selected={e.calendar == calendar}>{`${e.first_name} ${e.middle_name} ${e.last_name}`}</option>)}
-                  </select>
+                <p>Judge <span className="bg-blue-50" contentEditable="plaintext-only">
+                  {
+                    ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+                    judges.find(e => e.calendar == calendar)
+                  )
+                  }
+                </span>
                 </p>
               </div>
             </div>
