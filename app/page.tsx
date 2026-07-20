@@ -81,30 +81,30 @@ export default function Home() {
         </div>
         <div>
           <p className="w-[6.5in]"></p>
-        <div className="flex break-inside-avoid-page">
-          <div className="flex-1">
-            <p className="bg-blue-50" contentEditable="plaintext-only">Attorney Name (ARDC No. XXXXXXX)</p>
-            <p className="bg-blue-50" contentEditable="plaintext-only">Firm Name (Cook County Atty No. XXXXX)</p>
-            <p className="bg-blue-50" contentEditable="plaintext-only">321 N Clark Street</p>
-            <p className="bg-blue-50" contentEditable="plaintext-only">Chicago, IL 60654</p>
-            <p className="bg-blue-50" contentEditable="plaintext-only">(312) 988-5000</p>
-            <p className="bg-blue-50" contentEditable="plaintext-only">service@americanbar.org</p>
-          </div>
-          <div className="flex-1 flex flex-col justify-between">
-            <div>
-              <p>ENTERED:</p>
+          <div className="flex break-inside-avoid-page">
+            <div className="flex-1">
+              <p className="bg-blue-50" contentEditable="plaintext-only">Attorney Name (ARDC No. XXXXXXX)</p>
+              <p className="bg-blue-50" contentEditable="plaintext-only">Firm Name (Cook County Atty No. XXXXX)</p>
+              <p className="bg-blue-50" contentEditable="plaintext-only">321 N Clark Street</p>
+              <p className="bg-blue-50" contentEditable="plaintext-only">Chicago, IL 60654</p>
+              <p className="bg-blue-50" contentEditable="plaintext-only">(312) 988-5000</p>
+              <p className="bg-blue-50" contentEditable="plaintext-only">service@americanbar.org</p>
             </div>
-            <div>
-              <p>________________________________________</p>
-              <p>Judge 
-                <select>
-                  {...judges.filter(e => e.division === division_or_district)
-                  .map(e => <option selected={e.calendar == calendar}>{`${e.first_name} ${e.middle_name} ${e.last_name}`}</option>)}
-                </select>
-              </p>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <p>ENTERED:</p>
+              </div>
+              <div>
+                <p>________________________________________</p>
+                <p>Judge 
+                  <select>
+                    {...judges.filter(e => e.division === division_or_district)
+                      .map(e => <option selected={e.calendar == calendar}>{`${e.first_name} ${e.middle_name} ${e.last_name}`}</option>)}
+                  </select>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </main>
       <div className="control text-black bg-blue-100 my-5">
