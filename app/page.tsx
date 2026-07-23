@@ -50,15 +50,18 @@ export default function Home() {
         <div className="w-[6.5in]">
           <p className="text-center font-bold uppercase">In the Circuit Court of Cook County, Illinois</p>
           <p className="text-center font-bold uppercase">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
-          <div className="flex my-5">
-            <div className="flex-1 relative mr-2 border-r border-dashed">
+          <div className="grid grid-cols-[1fr_min-content_1fr] my-5 leading-none">
+            <div>
               <p className="bg-blue-50" contentEditable="true">PLAINTIFF</p>
               <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Plaintiff,</p>
               <p className="text-center">v.</p>
               <p className="bg-blue-50" contentEditable="true">DEFENDANT</p>
               <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Defendant.</p>
             </div>
-            <div className="flex-1 flex items-center">
+            <div className="h-0 min-h-full mr-2 overflow-hidden">
+              <div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div>
+            </div>
+            <div className="flex items-center">
               <div>
                 <p>
                   Case No.&nbsp;
