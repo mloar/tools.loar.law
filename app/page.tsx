@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import saveDocx from '../docx';
 import codes from "../codes.json";
 import judges from "../judges.json";
 import departments from "../departments.json";
@@ -112,8 +113,8 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <div className="control text-black bg-blue-100 my-5">
-        <label for="order-selector">Add an order:</label>
+      <div className="control text-center text-black bg-blue-100 my-5">
+        <label htmlFor="order-selector">Add an order:</label>
         <select className="bg-gray-100" id="order-selector">
           {...codes.map(c => <option value={c.code}>{c.description}</option>)}
         </select>
@@ -124,6 +125,9 @@ export default function Home() {
           li.innerText = codes.filter(e => e.code == document.getElementById('order-selector').selectedOptions[0].value)[0].text;
           document.getElementById('order-list').appendChild(li);
           }}>+</button>
+        <br/>
+        <button className="bg-gray-100 outline-1 px-3 py-1" onClick={e => window.print()}>Print (or save PDF)</button>
+        <button className="bg-gray-100 outline-1 px-3 py-1 ml-2" onClick={e => saveDocx(document.querySelector('main'))}>Save docx</button>
       </div>
     </>
   );
