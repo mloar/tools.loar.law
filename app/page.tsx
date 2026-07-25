@@ -50,8 +50,8 @@ export default function Home() {
       <main className="w-[8.5in] h-[11in] bg-white text-black border p-[1in] flex flex-col items-center">
         <div className="w-[6.5in]">
           <p className="text-center font-bold uppercase">In the Circuit Court of Cook County, Illinois</p>
-          <p className="text-center font-bold uppercase">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
-          <div className="grid grid-cols-[1fr_min-content_1fr] my-5 leading-none">
+          <p className="text-center font-bold uppercase mb-5">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
+          <div className="grid grid-cols-[1fr_min-content_1fr] leading-none">
             <div>
               <p className="bg-blue-50" contentEditable="true">PLAINTIFF</p>
               <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Plaintiff,</p>
@@ -60,7 +60,7 @@ export default function Home() {
               <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Defendant.</p>
             </div>
             <div className="h-0 min-h-full mr-2 overflow-hidden">
-              <div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div><div>)</div>
+              <p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p>
             </div>
             <div className="flex items-center">
               <div>
@@ -85,8 +85,8 @@ export default function Home() {
         </div>
         <div>
           <p className="w-[6.5in]"></p>
-          <div className="flex break-inside-avoid-page">
-            <div className="flex-1">
+          <div className="grid grid-cols-2 break-inside-avoid-page">
+            <div>
               <p className="bg-blue-50" contentEditable="plaintext-only">Attorney Name (ARDC No. XXXXXXX)</p>
               <p className="bg-blue-50" contentEditable="plaintext-only">Firm Name (Cook County Atty No. XXXXX)</p>
               <p className="bg-blue-50" contentEditable="plaintext-only">321 N Clark Street</p>
@@ -94,12 +94,12 @@ export default function Home() {
               <p className="bg-blue-50" contentEditable="plaintext-only">(312) 988-5000</p>
               <p className="bg-blue-50" contentEditable="plaintext-only">service@americanbar.org</p>
             </div>
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex flex-col justify-between">
               <div>
                 <p>ENTERED:</p>
               </div>
               <div>
-                <p>________________________________________</p>
+                <p>_____________________________________</p>
                 <p>Judge <span className="bg-blue-50" contentEditable="plaintext-only">
                   {
                     ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
