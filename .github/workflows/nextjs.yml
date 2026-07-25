@@ -48,6 +48,10 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+      - name: Install Corepack
+        id: install-corepack
+        run:
+          npm i -g corepack
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
