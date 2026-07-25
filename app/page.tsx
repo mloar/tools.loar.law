@@ -112,10 +112,10 @@ export default function Home() {
             </div>
           </div>
           <p className="text-center uppercase font-bold underline my-5">Order</p>
-          <p>This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>, the Court being fully advised in the premises, it is hereby ordered that:</p>
+          <p className="my-5">This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>, the Court being fully advised in the premises, it is hereby ordered that:</p>
         </div>
-        <div className="w-[6.5in] grow my-5">
-          <ol className="ml-10 leading-[2] list-decimal" id="order-list"></ol>
+        <div className="w-[6.5in] grow">
+          <div className="grid grid-cols-[1fr_6fr] leading-[2]" id="order-list"></div>
         </div>
         <div>
           <p className="w-[6.5in]"></p>
@@ -148,10 +148,14 @@ export default function Home() {
           {...codes.map(c => <option value={c.code}>{c.description}</option>)}
         </select>
         <button className="bg-gray-100 outline-1 px-3 py-1 ml-2" onClick={e => {
-          const li = document.createElement('li');
+          const order = codes.find(e => e.code == document.getElementById('order-selector').selectedOptions[0].value);
+          const bullet = document.createElement('p');
+          bullet.innerText = `(${order.code})`;
+          document.getElementById('order-list').appendChild(bullet);
+          const li = document.createElement('p');
           li.contentEditable = "plaintext-only";
           li.className = "bg-blue-50";
-          li.innerText = codes.filter(e => e.code == document.getElementById('order-selector').selectedOptions[0].value)[0].text;
+          li.innerText = order.text;
           document.getElementById('order-list').appendChild(li);
           }}>+</button>
         <br/>
