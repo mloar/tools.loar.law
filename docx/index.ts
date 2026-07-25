@@ -67,6 +67,7 @@ function descendChild(children, child) {
             top: Number.parseFloat(style.marginTop) * TWIPS_PER_PIXEL,
             bottom: Number.parseFloat(style.marginBottom) * TWIPS_PER_PIXEL,
           },
+          verticalAlign: child.className.indexOf('items-center') > -1 ? "center" : "top",
         }));
       }
       const style = window.getComputedStyle(child);
