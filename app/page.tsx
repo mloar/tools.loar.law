@@ -62,7 +62,8 @@ export default function Home() {
             <div className="h-0 min-h-full mr-2 overflow-hidden">
               <p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p>
             </div>
-            <div className="grid items-center">
+            <div className="grid">
+              <div>&nbsp;</div>
               <div>
                 <p>
                   Case No.&nbsp;
@@ -75,6 +76,7 @@ export default function Home() {
                 </p>
                 }
               </div>
+            <div></div>
             </div>
           </div>
           <p className="text-center uppercase font-bold underline my-5">Order</p>
@@ -94,7 +96,7 @@ export default function Home() {
               <p className="bg-blue-50" contentEditable="plaintext-only">(312) 988-5000</p>
               <p className="bg-blue-50" contentEditable="plaintext-only">service@americanbar.org</p>
             </div>
-            <div className="flex flex-col justify-between">
+            <div className="grid grid-rows-[1fr_min-content]">
               <div>
                 <p>ENTERED:</p>
               </div>

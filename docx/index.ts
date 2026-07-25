@@ -54,6 +54,10 @@ function descendChild(children, child) {
   } else {
     if (child.tagName == 'DIV' && child.className.indexOf('grid') > -1) {
       const row = [];
+      const rows = [];
+      const style = window.getComputedStyle(child);
+      const colCount = style.gridTemplateColumns.split(' ').length;
+      let col = 0;
       for (const subchild of child.children) {
         const cell = [];
         const style = window.getComputedStyle(subchild);
@@ -69,14 +73,18 @@ function descendChild(children, child) {
           },
           verticalAlign: child.className.indexOf('items-center') > -1 ? "center" : "top",
         }));
-      }
-      const style = window.getComputedStyle(child);
-      children.push(new Table({
-        rows: [
-          new TableRow({
+        col = col + 1;
+        if (col % colCount == 0) {
+          rows.push(new TableRow({
             children: row,
             height: { value: Number.parseFloat(style.height) * TWIPS_PER_PIXEL * FUDGE_FACTOR, rule: "exact" },
-          })],
+          }));
+          row.length = 0;
+        }
+      }
+      // TODO: check that row is empty
+      children.push(new Table({
+        rows: rows,
         borders: TableBorders.NONE,
         layout: "fixed",
         ...(child.className.indexOf("break-inside-avoid-page") > -1 ? {float: {
