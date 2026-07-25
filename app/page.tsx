@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import saveDocx from '../docx';
 import codes from "../codes.json";
 import judges from "../judges.json";
@@ -37,13 +37,45 @@ function GetDepartmentAndDivision(caseNumber) {
   return ['', ''];
 }
 
+function initializeElement(elem, key, defaultValue) {
+  elem.innerText = localStorage.getItem(key) ?? defaultValue;
+  elem.addEventListener('input', e => {
+    localStorage.setItem(key, e.target.innerText);
+    e.preventDefault();
+  });
+}
+
 export default function Home() {
   const [caseNumber, setCaseNumber] = useState('');
   const [calendar, setCalendar] = useState('');
 
-  const plaintiff = "Plaintiff", defendant = "Defendant";
-  const hearingType = "";
   const [department, division_or_district] = GetDepartmentAndDivision(caseNumber);
+
+  useEffect(() => {
+    initializeElement(document.getElementById('party-1'), 'Party1', 'PLAINTIFF');
+    initializeElement(document.getElementById('party-type-1'), 'PartyType1', 'Plaintiff.');
+    initializeElement(document.getElementById('party-2'), 'Party2', 'DEFENDANT');
+    initializeElement(document.getElementById('party-type-2'), 'PartyType2', 'Defendant.');
+    initializeElement(document.getElementById('hearing-type'), 'HearingType', 'for status');
+
+    document.getElementById('judge').innerText = 
+      ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+        judges.find(e => e.calendar == calendar)
+      );
+
+    const block = document.getElementById('drafter-block');
+    const defaultBlock = [
+      "Attorney Name (ARDC No. XXXXXXX)",
+      "Firm Name (Cook County Atty No. XXXXX)",
+      "321 N Clark Street",
+      "Chicago, IL 60654",
+      "(312) 988-5000",
+      "service@americanbar.org",
+    ];
+    for (let i = 0; i < block.children.length; i++) {
+      initializeElement(block.children[i], `DrafterBlock${i}`, defaultBlock[i]);
+    }
+  }, [calendar]);
 
   return (
     <>
@@ -53,11 +85,11 @@ export default function Home() {
           <p className="text-center font-bold uppercase mb-5">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
           <div className="grid grid-cols-[1fr_min-content_1fr] leading-none">
             <div>
-              <p className="bg-blue-50" contentEditable="true">PLAINTIFF</p>
-              <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Plaintiff,</p>
+              <p className="bg-blue-50" id="party-1" contentEditable="plaintext-only"></p>
+              <p className="text-end bg-blue-50 mr-10" id="party-type-1" contentEditable="plaintext-only"></p>
               <p className="text-center">v.</p>
-              <p className="bg-blue-50" contentEditable="true">DEFENDANT</p>
-              <p className="text-end bg-blue-50 mr-10" contentEditable="plaintext-only">Defendant.</p>
+              <p className="bg-blue-50" id="party-2" contentEditable="plaintext-only"></p>
+              <p className="text-end bg-blue-50 mr-10" id="party-type-2" contentEditable="plaintext-only"></p>
             </div>
             <div className="h-0 min-h-full mr-2 overflow-hidden">
               <p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p>
@@ -72,7 +104,7 @@ export default function Home() {
                 {department === 'County' &&
                 <p>
                   Calendar: &nbsp;
-                  <input className="bg-blue-50" value={calendar} onChange={e => setCalendar(e.target.value)}/>
+                  <input className="bg-blue-50" id="calendar" value={calendar} onChange={e => setCalendar(e.target.value)}/>
                 </p>
                 }
               </div>
@@ -80,7 +112,7 @@ export default function Home() {
             </div>
           </div>
           <p className="text-center uppercase font-bold underline my-5">Order</p>
-          <p>This matter coming before the Court <span className="bg-blue-50" contentEditable="plaintext-only">for status</span>, the Court being fully advised in the premises, it is hereby ordered that:</p>
+          <p>This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>, the Court being fully advised in the premises, it is hereby ordered that:</p>
         </div>
         <div className="w-[6.5in] grow my-5">
           <ol className="ml-10 leading-[2] list-decimal" id="order-list"></ol>
@@ -88,13 +120,13 @@ export default function Home() {
         <div>
           <p className="w-[6.5in]"></p>
           <div className="grid grid-cols-2 break-inside-avoid-page">
-            <div>
-              <p className="bg-blue-50" contentEditable="plaintext-only">Attorney Name (ARDC No. XXXXXXX)</p>
-              <p className="bg-blue-50" contentEditable="plaintext-only">Firm Name (Cook County Atty No. XXXXX)</p>
-              <p className="bg-blue-50" contentEditable="plaintext-only">321 N Clark Street</p>
-              <p className="bg-blue-50" contentEditable="plaintext-only">Chicago, IL 60654</p>
-              <p className="bg-blue-50" contentEditable="plaintext-only">(312) 988-5000</p>
-              <p className="bg-blue-50" contentEditable="plaintext-only">service@americanbar.org</p>
+            <div id="drafter-block">
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50" contentEditable="plaintext-only"></p>
             </div>
             <div className="grid grid-rows-[1fr_min-content]">
               <div>
@@ -102,12 +134,7 @@ export default function Home() {
               </div>
               <div>
                 <p>_____________________________________</p>
-                <p>Judge <span className="bg-blue-50" contentEditable="plaintext-only">
-                  {
-                    ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
-                    judges.find(e => e.calendar == calendar)
-                  )
-                  }
+                <p>Judge <span className="bg-blue-50" id="judge" contentEditable="plaintext-only">
                 </span>
                 </p>
               </div>
