@@ -6,7 +6,7 @@ import codes from "../codes.json";
 import judges from "../judges.json";
 import departments from "../departments.json";
 
-function GetDepartmentAndDivision(caseNumber) {
+function GetDepartmentAndDivision(caseNumber : string) {
   if (caseNumber[4] === 'L')
     return ['County', 'Law'];
 
@@ -37,12 +37,14 @@ function GetDepartmentAndDivision(caseNumber) {
   return ['', ''];
 }
 
-function initializeElement(elem, key, defaultValue) {
-  elem.innerText = localStorage.getItem(key) ?? defaultValue;
-  elem.addEventListener('input', e => {
-    localStorage.setItem(key, e.target.innerText);
-    e.preventDefault();
-  });
+function initializeElement(elem : HTMLElement | null, key : string, defaultValue : string) {
+  if (elem) {
+    elem.innerText = localStorage.getItem(key) ?? defaultValue;
+    elem.addEventListener('input', e => {
+      if (e.target != null) localStorage.setItem(key, (e.target as HTMLElement).innerText);
+      e.preventDefault();
+    });
+  }
 }
 
 export default function Home() {
@@ -58,22 +60,26 @@ export default function Home() {
     initializeElement(document.getElementById('party-type-2'), 'PartyType2', 'Defendant.');
     initializeElement(document.getElementById('hearing-type'), 'HearingType', 'for status');
 
-    document.getElementById('judge').innerText = 
-      ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
-        judges.find(e => e.calendar == calendar)
+    const judge = document.getElementById('judge');
+    if (judge) {
+      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+        judges.find(e => e.calendar == calendar) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
       );
+    }
 
     const block = document.getElementById('drafter-block');
-    const defaultBlock = [
-      "Attorney Name (ARDC No. XXXXXXX)",
-      "Firm Name (Cook County Atty No. XXXXX)",
-      "321 N Clark Street",
-      "Chicago, IL 60654",
-      "(312) 988-5000",
-      "service@americanbar.org",
-    ];
-    for (let i = 0; i < block.children.length; i++) {
-      initializeElement(block.children[i], `DrafterBlock${i}`, defaultBlock[i]);
+    if (block) {
+      const defaultBlock = [
+        "Attorney Name (ARDC No. XXXXXXX)",
+        "Firm Name (Cook County Atty No. XXXXX)",
+        "321 N Clark Street",
+        "Chicago, IL 60654",
+        "(312) 988-5000",
+        "service@americanbar.org",
+      ];
+      for (let i = 0; i < block.children.length; i++) {
+        initializeElement(block.children[i] as HTMLElement, `DrafterBlock${i}`, defaultBlock[i]);
+      }
     }
   }, [calendar]);
 
@@ -148,19 +154,25 @@ export default function Home() {
           {...codes.map(c => <option value={c.code}>{c.description}</option>)}
         </select>
         <button className="bg-gray-100 outline-1 px-3 py-1 ml-2" onClick={e => {
-          const order = codes.find(e => e.code == document.getElementById('order-selector').selectedOptions[0].value);
-          const bullet = document.createElement('p');
-          bullet.innerText = `(${order.code})`;
-          document.getElementById('order-list').appendChild(bullet);
-          const li = document.createElement('p');
-          li.contentEditable = "plaintext-only";
-          li.className = "bg-blue-50";
-          li.innerText = order.text;
-          document.getElementById('order-list').appendChild(li);
+          const orderSelector = document.getElementById('order-selector');
+          const orderList = document.getElementById('order-list');
+          if (orderSelector && orderList) {
+            const order = codes.find(
+            e => e.code.toString() === (orderSelector as HTMLSelectElement).selectedOptions[0].value
+            ) ?? { code: 9999, text: "Undefined order" };
+            const bullet = document.createElement('p');
+            bullet.innerText = `(${order.code})`;
+            orderList.appendChild(bullet);
+            const li = document.createElement('p');
+            li.contentEditable = "plaintext-only";
+            li.className = "bg-blue-50";
+            li.innerText = order.text;
+            orderList.appendChild(li);
+          }
           }}>+</button>
         <br/>
         <button className="bg-gray-100 outline-1 px-3 py-1" onClick={e => window.print()}>Print (or save PDF)</button>
-        <button className="bg-gray-100 outline-1 px-3 py-1 ml-2" onClick={e => saveDocx(document.querySelector('main'))}>Save docx</button>
+        <button className="bg-gray-100 outline-1 px-3 py-1 ml-2" onClick={e => saveDocx(document.querySelector('main') ?? document.createElement('DIV'))}>Save docx</button>
       </div>
     </>
   );

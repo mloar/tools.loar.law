@@ -1,4 +1,5 @@
 import {
+  AlignmentType,
   Document,
   Paragraph,
   Packer,
@@ -9,6 +10,10 @@ import {
   TextRun,
 } from "docx";
 
+import type {
+  FileChild,
+} from "docx";
+
 import { saveAs } from "file-saver";
 
 import * as React from 'react';
@@ -16,36 +21,36 @@ import * as React from 'react';
 const FUDGE_FACTOR = 1.2;
 const TWIPS_PER_PIXEL = 15;
 
-function roundUpTwip(val) {
+function roundUpTwip(val : number) {
   return val + (val % 72);
 }
 
-function makeTextRun(text, style) {
+function makeTextRun(text : string, style: CSSStyleDeclaration) {
   return new TextRun({
     text,
     allCaps: style.textTransform == 'uppercase',
-    bold: style.fontWeight > 400,
+    bold: Number.parseInt(style.fontWeight) > 400,
     underline: style.textDecoration == 'underline' ? { type: 'single' } : { type: 'none' },
     font: style.fontFamily.replaceAll('"', ''),
     size: Number.parseInt(style.fontSize) * 1.5,
   });
 }
 
-function descendChild(children, child) {
+function descendChild(children : FileChild[], child : Element) {
   if (child.tagName == 'P') {
     const runs = [];
     const style = window.getComputedStyle(child);
     for (const run of child.childNodes) {
       if (run instanceof Text) {
         runs.push(makeTextRun(run.data, style));
-      } else if (run.tagName == 'SPAN') {
+      } else if (run instanceof HTMLElement && run.tagName == 'SPAN') {
         const style = window.getComputedStyle(run);
         runs.push(makeTextRun(run.innerText, style));
       }
     }
     children.push(new Paragraph({
       children: runs,
-      alignment: style.textAlign,
+      alignment: style.textAlign == "center" ? AlignmentType.CENTER : AlignmentType.START,
       spacing: {
         before: Number.parseInt(style.marginTop) * TWIPS_PER_PIXEL,
         after: Number.parseInt(style.marginBottom) * TWIPS_PER_PIXEL,
@@ -59,13 +64,13 @@ function descendChild(children, child) {
       const colCount = style.gridTemplateColumns.split(' ').length;
       let col = 0;
       for (const subchild of child.children) {
-        const cell = [];
+        const cell : FileChild[] = [];
         const style = window.getComputedStyle(subchild);
         descendChild(cell, subchild);
         row.push(new TableCell({
           children: cell,
           width: { size: Number.parseFloat(style.width) * TWIPS_PER_PIXEL, type: "dxa" },
-          margins: { type: "dxa",
+          margins: { marginUnitType: "dxa",
             left: Number.parseFloat(style.marginLeft) * TWIPS_PER_PIXEL,
             right: Number.parseFloat(style.marginRight) * TWIPS_PER_PIXEL,
             top: Number.parseFloat(style.marginTop) * TWIPS_PER_PIXEL,
@@ -100,8 +105,8 @@ function descendChild(children, child) {
   }
 }
 
-export default function saveDocx(dom) {
-  const children = [];
+export default function saveDocx(dom : HTMLElement) {
+  const children : FileChild[] = [];
 
   for (const child of dom.children) {
     for (const subchild of child.children) {
