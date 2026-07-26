@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "Loar Law Tools",
-  description: "Tools for legal practice",
+  title: "Cook County Order Builder",
+  description: "Generates proposed orders for use in the Circuit Court of Cook County, Illinois",
 };
 
 export default function RootLayout({
