@@ -43,51 +43,62 @@ function descendChild(children : FileChild[], child : Element) {
     for (const run of child.childNodes) {
       if (run instanceof Text) {
         runs.push(makeTextRun(run.data, style));
-      } else if (run instanceof HTMLElement && run.tagName == 'SPAN') {
+      } else if (run instanceof HTMLSpanElement) {
         const style = window.getComputedStyle(run);
         runs.push(makeTextRun(run.innerText, style));
+      } else if (run instanceof HTMLInputElement) {
+        const style = window.getComputedStyle(run);
+        runs.push(makeTextRun(run.value, style));
       }
     }
     children.push(new Paragraph({
       children: runs,
-      alignment: style.textAlign == "center" ? AlignmentType.CENTER : AlignmentType.START,
+      alignment: style.textAlign == "center"
+        ? AlignmentType.CENTER
+        : style.textAlign == "end"
+          ? AlignmentType.END
+          : AlignmentType.START,
+      indent: {
+        left: Number.parseInt(style.marginLeft) * TWIPS_PER_PIXEL,
+        right: Number.parseInt(style.marginRight) * TWIPS_PER_PIXEL,
+      },
       spacing: {
         before: Number.parseInt(style.marginTop) * TWIPS_PER_PIXEL,
         after: Number.parseInt(style.marginBottom) * TWIPS_PER_PIXEL,
       },
     }));
-  } else {
-    if (child.tagName == 'DIV' && child.className.indexOf('grid') > -1) {
-      const row = [];
-      const rows = [];
-      const style = window.getComputedStyle(child);
-      const colCount = style.gridTemplateColumns.split(' ').length;
-      let col = 0;
-      for (const subchild of child.children) {
-        const cell : FileChild[] = [];
-        const style = window.getComputedStyle(subchild);
-        descendChild(cell, subchild);
-        row.push(new TableCell({
-          children: cell,
-          width: { size: Number.parseFloat(style.width) * TWIPS_PER_PIXEL, type: "dxa" },
-          margins: { marginUnitType: "dxa",
-            left: Number.parseFloat(style.marginLeft) * TWIPS_PER_PIXEL,
-            right: Number.parseFloat(style.marginRight) * TWIPS_PER_PIXEL,
-            top: Number.parseFloat(style.marginTop) * TWIPS_PER_PIXEL,
-            bottom: Number.parseFloat(style.marginBottom) * TWIPS_PER_PIXEL,
-          },
-          verticalAlign: child.className.indexOf('items-center') > -1 ? "center" : "top",
+  } else if (child.tagName == 'DIV' && child.className.indexOf('grid') > -1) {
+    const row = [];
+    const rows = [];
+    const style = window.getComputedStyle(child);
+    const colCount = style.gridTemplateColumns.split(' ').length;
+    let col = 0;
+    for (const subchild of child.children) {
+      const cell : FileChild[] = [];
+      const style = window.getComputedStyle(subchild);
+      descendChild(cell, subchild);
+      row.push(new TableCell({
+        children: cell,
+        width: { size: Number.parseFloat(style.width) * TWIPS_PER_PIXEL, type: "dxa" },
+        margins: { marginUnitType: "dxa",
+          left: Number.parseFloat(style.marginLeft) * TWIPS_PER_PIXEL,
+          right: Number.parseFloat(style.marginRight) * TWIPS_PER_PIXEL,
+          top: Number.parseFloat(style.marginTop) * TWIPS_PER_PIXEL,
+          bottom: Number.parseFloat(style.marginBottom) * TWIPS_PER_PIXEL,
+        },
+        verticalAlign: child.className.indexOf('items-center') > -1 ? "center" : "top",
+      }));
+      col = col + 1;
+      if (col % colCount == 0) {
+        rows.push(new TableRow({
+          children: row,
+          height: { value: Number.parseFloat(style.height) * TWIPS_PER_PIXEL * FUDGE_FACTOR, rule: "exact" },
         }));
-        col = col + 1;
-        if (col % colCount == 0) {
-          rows.push(new TableRow({
-            children: row,
-            height: { value: Number.parseFloat(style.height) * TWIPS_PER_PIXEL * FUDGE_FACTOR, rule: "exact" },
-          }));
-          row.length = 0;
-        }
+        row.length = 0;
       }
-      // TODO: check that row is empty
+    }
+    // TODO: check that row is empty
+    if (rows.length > 0) {
       children.push(new Table({
         rows: rows,
         borders: TableBorders.NONE,
@@ -97,10 +108,10 @@ function descendChild(children : FileChild[], child : Element) {
           relativeVerticalPosition: "outside",
         }} : {}),
       }));
-    } else {
-      for (const subchild of child.children) {
-        descendChild(children, subchild);
-      }
+    }
+  } else {
+    for (const subchild of child.children) {
+      descendChild(children, subchild);
     }
   }
 }

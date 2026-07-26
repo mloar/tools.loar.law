@@ -55,7 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     initializeElement(document.getElementById('party-1'), 'Party1', 'PLAINTIFF');
-    initializeElement(document.getElementById('party-type-1'), 'PartyType1', 'Plaintiff.');
+    initializeElement(document.getElementById('party-type-1'), 'PartyType1', 'Plaintiff,');
     initializeElement(document.getElementById('party-2'), 'Party2', 'DEFENDANT');
     initializeElement(document.getElementById('party-type-2'), 'PartyType2', 'Defendant.');
     initializeElement(document.getElementById('hearing-type'), 'HearingType', 'for status');
@@ -91,16 +91,16 @@ export default function Home() {
           <p className="text-center font-bold uppercase mb-5">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
           <div className="grid grid-cols-[1fr_min-content_1fr] leading-none">
             <div>
-              <p className="bg-blue-50" id="party-1" contentEditable="plaintext-only"></p>
-              <p className="text-end bg-blue-50 mr-10" id="party-type-1" contentEditable="plaintext-only"></p>
-              <p className="text-center">v.</p>
-              <p className="bg-blue-50" id="party-2" contentEditable="plaintext-only"></p>
-              <p className="text-end bg-blue-50 mr-10" id="party-type-2" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50 mb-4" id="party-1" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50 ml-10 mb-4" id="party-type-1" contentEditable="plaintext-only"></p>
+              <p className="text-center mb-4">v.</p>
+              <p className="bg-blue-50 mb-4" id="party-2" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50 ml-10" id="party-type-2" contentEditable="plaintext-only"></p>
             </div>
             <div className="h-0 min-h-full mr-2 overflow-hidden">
               <p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p>
             </div>
-            <div className="grid">
+            <div className="grid grid-rows-[1fr_min-content_1fr]">
               <div>&nbsp;</div>
               <div>
                 <p>
