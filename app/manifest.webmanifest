@@ -3,7 +3,7 @@
   "name": "Loar Law Tools",
   "short_name": "Loar Law Tools",
   "description": "Loar Law tools",
-  "start_url": "/cook-county-order-builder/",
+  "start_url": "/cook-county-order-builder",
   "display": "standalone",
   "background_color": "#fff",
   "theme_color": "#fff",
