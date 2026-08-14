@@ -50,6 +50,7 @@ function initializeElement(elem : HTMLElement | null, key : string, defaultValue
 export default function Home() {
   const [caseNumber, setCaseNumber] = useState('');
   const [calendar, setCalendar] = useState('');
+  const [courtroom, setCourtroom] = useState('');
 
   const [department, division_or_district] = GetDepartmentAndDivision(caseNumber);
 
@@ -61,9 +62,13 @@ export default function Home() {
     initializeElement(document.getElementById('hearing-type'), 'HearingType', 'for status');
 
     const judge = document.getElementById('judge');
-    if (judge) {
+    if (judge && calendar.length) {
       judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
         judges.find(e => e.calendar == calendar) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
+      );
+    } else if (judge && courtroom.length) {
+      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+        judges.find(e => e.courtroom == courtroom) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
       );
     }
 
@@ -81,7 +86,7 @@ export default function Home() {
         initializeElement(block.children[i] as HTMLElement, `DrafterBlock${i}`, defaultBlock[i]);
       }
     }
-  }, [calendar]);
+  }, [calendar, courtroom]);
 
   return (
     <>
@@ -98,7 +103,7 @@ export default function Home() {
               <p className="bg-blue-50 ml-10" id="party-type-2" contentEditable="plaintext-only"></p>
             </div>
             <div className="h-0 min-h-full mr-2 overflow-hidden">
-              <p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p><p>)</p>
+              {...Array(60).fill(<p>)</p>)}
             </div>
             <div className="grid grid-rows-[1fr_min-content_1fr]">
               <div>&nbsp;</div>
@@ -109,8 +114,14 @@ export default function Home() {
                 </p>
                 {department === 'County' &&
                 <p>
-                  Calendar: &nbsp;
-                  <input className="bg-blue-50" id="calendar" value={calendar} onChange={e => setCalendar(e.target.value)}/>
+                  Calendar:&nbsp;
+                  <input className="bg-blue-50" id="calendar" value={calendar} onChange={e => { setCalendar(e.target.value); setCourtroom(''); }}/>
+                </p>
+                }
+                {department === 'Municipal' &&
+                <p>
+                  Courtroom:&nbsp;
+                  <input className="bg-blue-50" id="courtroom" value={courtroom} onChange={e => { setCalendar(''); setCourtroom(e.target.value); }}/>
                 </p>
                 }
               </div>
@@ -118,7 +129,8 @@ export default function Home() {
             </div>
           </div>
           <p className="text-center uppercase font-bold underline my-5">Order</p>
-          <p className="my-5">This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>, the Court being fully advised in the premises, it is hereby ordered that:</p>
+          <p className="my-5">This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>,
+          the Court being fully advised in the premises, it is hereby ordered that:</p>
         </div>
         <div className="w-[6.5in] grow">
           <div className="grid grid-cols-[1fr_6fr] leading-[2]" id="order-list"></div>
