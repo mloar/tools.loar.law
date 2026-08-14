@@ -47,30 +47,50 @@ function initializeElement(elem : HTMLElement | null, key : string, defaultValue
   }
 }
 
+function initializeStateElement(elem : HTMLElement | null, defaultValue : string, valueSetter: (val: string) => void) {
+  if (elem) {
+    elem.innerText = defaultValue;
+    elem.addEventListener('input', e => {
+      if (e.target != null) valueSetter((e.target as HTMLElement).innerText);
+      e.preventDefault();
+    });
+  }
+}
+
+function getFragmentParameter(name: string) {
+  if (window.location.hash == '') return null
+  const param = window.location.hash.indexOf(name + '=')
+  if (param == -1) return null
+  return decodeURIComponent(window.location.hash.substring(param + name.length + 1).split('&')[0])
+}
+
 export default function Home() {
   const [caseNumber, setCaseNumber] = useState('');
   const [calendar, setCalendar] = useState('');
   const [courtroom, setCourtroom] = useState('');
+  const [plaintiff, setPlaintiff] = useState('PLAINTIFF');
+  const [party1Type, setParty1Type] = useState('Plaintiff,');
+  const [defendant, setDefendant] = useState('DEFENDANT');
+  const [party2Type, setParty2Type] = useState('Defendant.');
+  const [hearingType, setHearingType] = useState('for status');
 
   const [department, division_or_district] = GetDepartmentAndDivision(caseNumber);
 
   useEffect(() => {
-    initializeElement(document.getElementById('party-1'), 'Party1', 'PLAINTIFF');
-    initializeElement(document.getElementById('party-type-1'), 'PartyType1', 'Plaintiff,');
-    initializeElement(document.getElementById('party-2'), 'Party2', 'DEFENDANT');
-    initializeElement(document.getElementById('party-type-2'), 'PartyType2', 'Defendant.');
-    initializeElement(document.getElementById('hearing-type'), 'HearingType', 'for status');
+    setCaseNumber(getFragmentParameter('caseNo') ?? caseNumber);
+    setCalendar(getFragmentParameter('calendar') ?? calendar);
+    setCourtroom(getFragmentParameter('courtroom') ?? courtroom);
 
-    const judge = document.getElementById('judge');
-    if (judge && calendar.length) {
-      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
-        judges.find(e => e.calendar == calendar) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
-      );
-    } else if (judge && courtroom.length) {
-      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
-        judges.find(e => e.courtroom == courtroom) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
-      );
-    }
+    const p = getFragmentParameter('plaintiff') ?? plaintiff;
+    setPlaintiff(p);
+    const d = getFragmentParameter('defendant') ?? defendant;
+    setDefendant(d);
+    const h = getFragmentParameter('hearingType') ?? hearingType;
+    setHearingType(h);
+
+    initializeStateElement(document.getElementById('plaintiff'), p, setPlaintiff);
+    initializeStateElement(document.getElementById('defendant'), d, setDefendant);
+    initializeStateElement(document.getElementById('hearing-type'), h, setHearingType);
 
     const block = document.getElementById('drafter-block');
     if (block) {
@@ -86,6 +106,19 @@ export default function Home() {
         initializeElement(block.children[i] as HTMLElement, `DrafterBlock${i}`, defaultBlock[i]);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const judge = document.getElementById('judge');
+    if (judge && calendar.length) {
+      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+        judges.find(e => e.calendar == calendar) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
+      );
+    } else if (judge && courtroom.length) {
+      judge.innerText = ((e) => `${e.first_name}${e.middle_name ? ' ' + e.middle_name : ''} ${e.last_name}`)(
+        judges.find(e => e.courtroom == courtroom) ?? {first_name: "Jerry", middle_name: "D.", last_name: "Judge"}
+      );
+    }
   }, [calendar, courtroom]);
 
   return (
@@ -96,11 +129,11 @@ export default function Home() {
           <p className="text-center font-bold uppercase mb-5">{department} Department, {division_or_district} {department === 'County' && 'Division'}{department === 'Municipal' && 'District'}</p>
           <div className="grid grid-cols-[1fr_min-content_1fr] leading-none">
             <div>
-              <p className="bg-blue-50 mb-4" id="party-1" contentEditable="plaintext-only"></p>
-              <p className="bg-blue-50 ml-10 mb-4" id="party-type-1" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50 mb-4" id="plaintiff" contentEditable="plaintext-only"></p>
+              <input className="bg-blue-50 ml-10 mb-4" value={party1Type} onChange={e => setParty1Type(e.target.value)} />
               <p className="text-center mb-4">v.</p>
-              <p className="bg-blue-50 mb-4" id="party-2" contentEditable="plaintext-only"></p>
-              <p className="bg-blue-50 ml-10" id="party-type-2" contentEditable="plaintext-only"></p>
+              <p className="bg-blue-50 mb-4" id="defendant" contentEditable="plaintext-only"></p>
+              <input className="bg-blue-50 ml-10" value={party2Type} onChange={e => setParty2Type(e.target.value)}/>
             </div>
             <div className="h-0 min-h-full mr-2 overflow-hidden">
               {...Array(60).fill(<p>)</p>)}
@@ -115,22 +148,22 @@ export default function Home() {
                 {department === 'County' &&
                 <p>
                   Calendar:&nbsp;
-                  <input className="bg-blue-50" id="calendar" value={calendar} onChange={e => { setCalendar(e.target.value); setCourtroom(''); }}/>
+                  <input className="bg-blue-50" value={calendar} onChange={e => { setCalendar(e.target.value); setCourtroom(''); }}/>
                 </p>
                 }
                 {department === 'Municipal' &&
-                <p>
-                  Courtroom:&nbsp;
-                  <input className="bg-blue-50" id="courtroom" value={courtroom} onChange={e => { setCalendar(''); setCourtroom(e.target.value); }}/>
-                </p>
+                  <p>
+                    Courtroom:&nbsp;
+                    <input className="bg-blue-50" value={courtroom} onChange={e => { setCalendar(''); setCourtroom(e.target.value); }}/>
+                  </p>
                 }
               </div>
-            <div></div>
+              <div></div>
             </div>
           </div>
           <p className="text-center uppercase font-bold underline my-5">Order</p>
           <p className="my-5">This matter coming before the Court <span className="bg-blue-50" id="hearing-type" contentEditable="plaintext-only"></span>,
-          the Court being fully advised in the premises, it is hereby ordered that:</p>
+            the Court being fully advised in the premises, it is hereby ordered that:</p>
         </div>
         <div className="w-[6.5in] grow">
           <div className="grid grid-cols-[1fr_6fr] leading-[2]" id="order-list"></div>
@@ -171,15 +204,15 @@ export default function Home() {
           if (orderSelector && orderList) {
             const order = codes.find(
             e => e.code.toString() === (orderSelector as HTMLSelectElement).selectedOptions[0].value
-            ) ?? { code: 9999, text: "Undefined order" };
-            const bullet = document.createElement('p');
-            bullet.innerText = `(${order.code})`;
-            orderList.appendChild(bullet);
-            const li = document.createElement('p');
-            li.contentEditable = "plaintext-only";
-            li.className = "bg-blue-50";
-            li.innerText = order.text;
-            orderList.appendChild(li);
+          ) ?? { code: 9999, text: "Undefined order" };
+          const bullet = document.createElement('p');
+          bullet.innerText = `(${order.code})`;
+          orderList.appendChild(bullet);
+          const li = document.createElement('p');
+          li.contentEditable = "plaintext-only";
+          li.className = "bg-blue-50";
+          li.innerText = order.text;
+          orderList.appendChild(li);
           }
           }}>+</button>
         <br/>
