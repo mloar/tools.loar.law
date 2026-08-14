@@ -125,6 +125,20 @@ export default function saveDocx(dom : HTMLElement) {
     }
   }
   const doc = new Document({
+    styles: {
+      paragraphStyles: [
+        {
+          id: "Normal",
+          name: "Normal",
+          run: { size: 24 },
+        },
+        {
+          id: "ListParagraph",
+          name: "List Paragraph",
+          run: { size: 24 },
+        },
+      ],
+    },
     sections: [
       {
         children,
